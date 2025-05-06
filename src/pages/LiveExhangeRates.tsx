@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -20,26 +19,22 @@ import {
   useTheme
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
+import useExchangeRates from "../hooks/useExchangeRates";
 
-
-interface ICurrencyInfo {
-  base_code: string;
-  conversion_rates: {
-    [key: string]: number;
-  };
+// Define the interface for rate entries
+interface RateEntry {
+  code: string;
+  rate: number;
 }
 
-const LiveExchangeRates: React.FC = () => {
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [currencyInfo, setCurrencyInfo] = useState<ICurrencyInfo>({
-    base_code: "",
-    conversion_rates: {},
-  });
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+const LiveExchangeRates = () => {
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currency, setCurrency] = useState<string>("USD");
   const theme = useTheme();
+  
+  // Use our custom hook
+  const { data: currencyInfo, loading, error } = useExchangeRates(currency);
 
   // List of available currencies
   const currencies = [
@@ -55,37 +50,10 @@ const LiveExchangeRates: React.FC = () => {
     "AED", 
   ];
 
-  const getAllRates = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const res = await axios.get(
-        `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_REACT_API}/latest/${currency}`
-      );
-      if (res.status !== 200) {
-        throw new AxiosError("Error while fetching exchange rates!");
-      }
-      const { data } = res;
-      setCurrencyInfo({
-        base_code: data.base_code,
-        conversion_rates: data.conversion_rates,
-      });
-    } catch (error: unknown) {
-
-      setError(error instanceof AxiosError ? error.message  :  "Failed to fetch exchange rates")
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getAllRates();
-  }, [currency]); 
-
-  const rateEntries = Object.entries(currencyInfo.conversion_rates).map(
+  const rateEntries: RateEntry[] = Object.entries(currencyInfo.conversion_rates).map(
     ([code, rate]) => ({
       code,
-      rate,
+      rate: rate as number,
     })
   );
 
@@ -108,7 +76,6 @@ const LiveExchangeRates: React.FC = () => {
     setCurrency(event.target.value);
     setPage(0); 
   };
-
 
   return (
     <Box sx={{ maxWidth: 800, mx: "auto", p: 2, my: 2 }}>
