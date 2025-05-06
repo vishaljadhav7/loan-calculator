@@ -3,11 +3,9 @@ import { AppContextProvider } from "./Context/AppContext"
 
 function App() {
   return (
-    <>
     <AppContextProvider>
       <AppRoutes/>
     </AppContextProvider>
-    </>
   )
 }
 

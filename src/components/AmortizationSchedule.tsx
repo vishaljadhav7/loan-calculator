@@ -10,7 +10,8 @@ import {
   Paper,
   Box,
   TablePagination,
-  Button
+  Button,
+  useTheme
 } from '@mui/material';
 import { useAppContext } from '../Context/AppContext';
 
@@ -26,8 +27,9 @@ const AmortizationSchedule: React.FC = () => {
   const [amortizationSchedule, setAmortizationSchedule] = useState<AmortizationRow[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const { formValues, emi , setEmi} = useAppContext();
+  const theme = useTheme();
+  
+  const { formValues, emi, setEmi } = useAppContext();
   const { interestRate, loanAmount, termYears } = formValues;
 
   const generateAmortizationSchedule = (
@@ -88,7 +90,6 @@ const AmortizationSchedule: React.FC = () => {
     setPage(0); 
   };
 
- 
   const paginatedSchedule = amortizationSchedule.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -96,9 +97,9 @@ const AmortizationSchedule: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2, marginY: 2 }}>
-      <Box sx={{display : "flex", alignItems : "center", justifyContent : "space-around"}}>
+      <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-around"}}>
         <Typography variant="h6" component="h1" gutterBottom align="center">
-          Monthly EMI : {emi?.toFixed(2)}
+          Monthly EMI: {emi?.toFixed(2)}
         </Typography>    
          <Button 
           color='primary'
@@ -115,19 +116,34 @@ const AmortizationSchedule: React.FC = () => {
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                  <TableCell align="center" sx={{ 
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                    fontWeight: 'bold' 
+                  }}>
                     Month
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                  <TableCell align="center" sx={{ 
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                    fontWeight: 'bold' 
+                  }}>
                     Payment
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                  <TableCell align="center" sx={{ 
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                    fontWeight: 'bold' 
+                  }}>
                     Principal Paid
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                  <TableCell align="center" sx={{ 
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                    fontWeight: 'bold' 
+                  }}>
                     Interest Paid
                   </TableCell>
-                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                  <TableCell align="center" sx={{ 
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                    fontWeight: 'bold' 
+                  }}>
                     Remaining Balance
                   </TableCell>
                 </TableRow>
@@ -136,7 +152,11 @@ const AmortizationSchedule: React.FC = () => {
                 {paginatedSchedule.map((row) => (
                   <TableRow
                     key={row.month}
-                    sx={{ '&:hover': { backgroundColor: 'grey.50' } }}
+                    sx={{ 
+                      '&:hover': { 
+                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'grey.50' 
+                      } 
+                    }}
                   >
                     <TableCell align="center">{row.month}</TableCell>
                     <TableCell align="center">${row.payment.toFixed(2)}</TableCell>

@@ -17,7 +17,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  useTheme
 } from "@mui/material";
+
 
 interface ICurrencyInfo {
   base_code: string;
@@ -36,6 +38,7 @@ const LiveExchangeRates: React.FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currency, setCurrency] = useState<string>("USD");
+  const theme = useTheme();
 
   // List of available currencies
   const currencies = [
@@ -73,13 +76,10 @@ const LiveExchangeRates: React.FC = () => {
     }
   };
 
-
- 
   useEffect(() => {
     getAllRates();
   }, [currency]); 
 
-  
   const rateEntries = Object.entries(currencyInfo.conversion_rates).map(
     ([code, rate]) => ({
       code,
@@ -102,10 +102,11 @@ const LiveExchangeRates: React.FC = () => {
     setPage(0); 
   };
 
-  const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setCurrency(event.target.value as string);
     setPage(0); 
   };
+
 
   return (
     <Box sx={{ maxWidth: 800, mx: "auto", p: 2, my: 2 }}>
@@ -155,13 +156,19 @@ const LiveExchangeRates: React.FC = () => {
                 <TableRow>
                   <TableCell
                     align="center"
-                    sx={{ backgroundColor: "grey.100", fontWeight: "bold" }}
+                    sx={{ 
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                      fontWeight: "bold" 
+                    }}
                   >
                     Currency Code
                   </TableCell>
                   <TableCell
                     align="center"
-                    sx={{ backgroundColor: "grey.100", fontWeight: "bold" }}
+                    sx={{ 
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'grey.100', 
+                      fontWeight: "bold" 
+                    }}
                   >
                     Exchange Rate
                   </TableCell>
@@ -171,7 +178,11 @@ const LiveExchangeRates: React.FC = () => {
                 {paginatedRates.map((entry) => (
                   <TableRow
                     key={entry.code}
-                    sx={{ "&:hover": { backgroundColor: "grey.50" } }}
+                    sx={{ 
+                      "&:hover": { 
+                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.04)' : 'grey.50' 
+                      } 
+                    }}
                   >
                     <TableCell align="center">{entry.code}</TableCell>
                     <TableCell align="center">{entry.rate.toFixed(4)}</TableCell>
