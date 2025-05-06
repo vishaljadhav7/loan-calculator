@@ -1,8 +1,19 @@
+import React from 'react';
+import LoanCalculator from '../components/LoanCalculator';
+import { Box } from '@mui/material';
+import AmortizationSchedule from '../components/AmortizationSchedule';
+import { useAppContext } from '../Context/AppContext';
 
-const Home = () => {
-  return (
-    <div>Home</div>
-  )
-}
+const Home: React.FC = () => {
+const {emi} = useAppContext()
 
-export default Home
+console.log("useAppContext =???? ", emi)
+return (
+    <Box>
+    <LoanCalculator/>
+     {emi && <AmortizationSchedule/>}
+    </Box>
+  );
+};
+
+export default Home;

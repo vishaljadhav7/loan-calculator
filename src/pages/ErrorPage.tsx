@@ -1,4 +1,6 @@
-const ErrorPage = () => {
+
+
+const ErrorPage : React.FC = () => {
   return (
     <div>ErrorPage</div>
   )

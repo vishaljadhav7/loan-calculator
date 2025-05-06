@@ -1,5 +1,5 @@
 
-const LiveExhangeRates = () => {
+const LiveExhangeRates : React.FC = () => {
   return (
     <div>LiveExhangeRates</div>
   )

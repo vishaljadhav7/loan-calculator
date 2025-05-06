@@ -15,8 +15,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import '../navbar.css'
 import { useState } from 'react';
 
-
-
 interface NavItem {
   label: string;
   path: string;
@@ -30,7 +28,7 @@ const navItems: NavItem[] = [
 
 
 
-const Navbar = () => {
+const Navbar : React.FC= () => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -42,7 +40,7 @@ const Navbar = () => {
 
   return (
     <>
-    <AppBar position='absolute' color='primary'sx={{width : "100%"}} >
+    <AppBar position='static' color='primary' sx={{width : "100%"}} >
       <Toolbar>
         <Box sx={{display : { xs : "flex" , sm : "none"}, marginX: "15px"}}>
          <IconButton
