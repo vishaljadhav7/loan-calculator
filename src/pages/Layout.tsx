@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import { Box, Container } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 
+
 const Layout = () => {
   return (
     <Box sx={{display : "flex", flexDirection : "column", minHeight : "100vh"}}>
