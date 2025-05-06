@@ -19,6 +19,7 @@ import {
   MenuItem,
   useTheme
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
 
 
 interface ICurrencyInfo {
@@ -94,7 +95,7 @@ const LiveExchangeRates: React.FC = () => {
     page * rowsPerPage + rowsPerPage
   );
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -103,8 +104,8 @@ const LiveExchangeRates: React.FC = () => {
     setPage(0); 
   };
 
-    const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setCurrency(event.target.value as string);
+  const handleCurrencyChange = (event: SelectChangeEvent) => {
+    setCurrency(event.target.value);
     setPage(0); 
   };
 

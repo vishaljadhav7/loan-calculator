@@ -81,7 +81,7 @@ const AmortizationSchedule: React.FC = () => {
     setPage(0);
   }, [emi, loanAmount, interestRate, termYears]);
 
-  const handleChangePage = (_, newPage: number) => {
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
 
