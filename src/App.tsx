@@ -1,9 +1,9 @@
+import AppRoutes from "./routes/AppRoutes"
 
 function App() {
-
   return (
     <>
-      <h1>Loan Calculator</h1>
+      <AppRoutes/>
     </>
   )
 }
