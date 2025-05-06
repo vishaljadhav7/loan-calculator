@@ -10,6 +10,7 @@ import {
   Paper,
   Box,
   TablePagination,
+  Button
 } from '@mui/material';
 import { useAppContext } from '../Context/AppContext';
 
@@ -26,7 +27,7 @@ const AmortizationSchedule: React.FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { formValues, emi } = useAppContext();
+  const { formValues, emi , setEmi} = useAppContext();
   const { interestRate, loanAmount, termYears } = formValues;
 
   const generateAmortizationSchedule = (
@@ -75,7 +76,7 @@ const AmortizationSchedule: React.FC = () => {
     }
 
     setAmortizationSchedule(generateAmortizationSchedule(principal, rate, years, emi));
-    setPage(0); // Reset to first page when schedule updates
+    setPage(0);
   }, [emi, loanAmount, interestRate, termYears]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -84,10 +85,10 @@ const AmortizationSchedule: React.FC = () => {
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page when rows per page changes
+    setPage(0); 
   };
 
-  // Calculate the rows to display based on pagination
+ 
   const paginatedSchedule = amortizationSchedule.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -95,6 +96,16 @@ const AmortizationSchedule: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2, marginY: 2 }}>
+      <Box sx={{display : "flex", alignItems : "center", justifyContent : "space-around"}}>
+        <Typography variant="h6" component="h1" gutterBottom align="center">
+          Monthly EMI : {emi?.toFixed(2)}
+        </Typography>    
+         <Button 
+          color='primary'
+         onClick={() => setEmi(null)}>
+          RESET TABLE
+         </Button>
+      </Box>
       {amortizationSchedule.length > 0 && (
         <Paper sx={{ p: 2, boxShadow: 1 }}>
           <Typography variant="h6" component="h2" gutterBottom align="center">
