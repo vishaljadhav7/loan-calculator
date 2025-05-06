@@ -1,9 +1,155 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
+  TablePagination,
+} from '@mui/material';
+import { useAppContext } from '../Context/AppContext';
 
-const AmortizationSchedule : React.FC = () => {
-  return (
-    <div>AmortizationSchedule</div>
-  )
+interface AmortizationRow {
+  month: number;
+  payment: number;
+  principalPaid: number;
+  interestPaid: number;
+  remainingBalance: number;
 }
 
-export default AmortizationSchedule
+const AmortizationSchedule: React.FC = () => {
+  const [amortizationSchedule, setAmortizationSchedule] = useState<AmortizationRow[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { formValues, emi } = useAppContext();
+  const { interestRate, loanAmount, termYears } = formValues;
+
+  const generateAmortizationSchedule = (
+    principal: number,
+    annualRate: number,
+    years: number,
+    emi: number
+  ): AmortizationRow[] => {
+    const monthlyRate = (annualRate / 100) / 12;
+    const totalMonths = years * 12;
+    let remainingBalance = principal;
+    const schedule: AmortizationRow[] = [];
+
+    for (let month = 1; month <= totalMonths; month++) {
+      const interestPaid = remainingBalance * monthlyRate;
+      const principalPaid = emi - interestPaid;
+      remainingBalance = remainingBalance - principalPaid;
+
+      if (remainingBalance < 0) remainingBalance = 0;
+
+      schedule.push({
+        month,
+        payment: emi,
+        principalPaid,
+        interestPaid,
+        remainingBalance,
+      });
+    }
+
+    return schedule;
+  };
+
+  useEffect(() => {
+    if (!emi) {
+      setAmortizationSchedule([]);
+      return;
+    }
+
+    const principal = parseFloat(loanAmount);
+    const rate = parseFloat(interestRate);
+    const years = parseFloat(termYears);
+
+    if (isNaN(principal) || isNaN(rate) || isNaN(years)) {
+      setAmortizationSchedule([]);
+      return;
+    }
+
+    setAmortizationSchedule(generateAmortizationSchedule(principal, rate, years, emi));
+    setPage(0); // Reset to first page when schedule updates
+  }, [emi, loanAmount, interestRate, termYears]);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page when rows per page changes
+  };
+
+  // Calculate the rows to display based on pagination
+  const paginatedSchedule = amortizationSchedule.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  return (
+    <Box sx={{ padding: 2, marginY: 2 }}>
+      {amortizationSchedule.length > 0 && (
+        <Paper sx={{ p: 2, boxShadow: 1 }}>
+          <Typography variant="h6" component="h2" gutterBottom align="center">
+            Amortization Schedule (USD)
+          </Typography>
+          <TableContainer sx={{ maxHeight: 400, overflow: 'auto' }}>
+            <Table size="small" stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                    Month
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                    Payment
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                    Principal Paid
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                    Interest Paid
+                  </TableCell>
+                  <TableCell align="center" sx={{ backgroundColor: 'grey.100', fontWeight: 'bold' }}>
+                    Remaining Balance
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedSchedule.map((row) => (
+                  <TableRow
+                    key={row.month}
+                    sx={{ '&:hover': { backgroundColor: 'grey.50' } }}
+                  >
+                    <TableCell align="center">{row.month}</TableCell>
+                    <TableCell align="center">${row.payment.toFixed(2)}</TableCell>
+                    <TableCell align="center">${row.principalPaid.toFixed(2)}</TableCell>
+                    <TableCell align="center">${row.interestPaid.toFixed(2)}</TableCell>
+                    <TableCell align="center">${row.remainingBalance.toFixed(2)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={amortizationSchedule.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      )}
+    </Box>
+  );
+};
+
+export default AmortizationSchedule;

@@ -25,22 +25,13 @@ interface FormErrors {
 
 const LoanCalculator: React.FC = () => {
 
-  const {setEmi} = useAppContext();
-
-  const [formValues, setFormValues] = useState<FormFields>({
-    loanAmount: "",
-    interestRate: "",
-    termYears: "",
-  });
-
+  const {setEmi , setFormValues, formValues } = useAppContext();
   
   const [errors, setErrors] = useState<FormErrors>({
     loanAmount: null,
     interestRate: null,
     termYears: null,
   });
-
-  // State for calculation result
 
 
   const handleFormChange = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -100,13 +91,10 @@ const LoanCalculator: React.FC = () => {
     const rate = validateNumericInput(formValues.interestRate, "interestRate");
     const years = validateNumericInput(formValues.termYears, "termYears");
 
-    // If all inputs are valid, calculate EMI
     if (!isNaN(principal) && !isNaN(rate) && !isNaN(years)) {
       const calculatedEMI = calculateEMI(principal, rate, years);
-      setEmi(calculatedEMI)
-
+      setEmi(calculatedEMI);
     } else {
-      // If any input is invalid, clear the results
       setEmi(null);
     }
   };

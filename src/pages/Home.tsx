@@ -5,9 +5,8 @@ import AmortizationSchedule from '../components/AmortizationSchedule';
 import { useAppContext } from '../Context/AppContext';
 
 const Home: React.FC = () => {
-const {emi} = useAppContext()
+const {emi} = useAppContext();
 
-console.log("useAppContext =???? ", emi)
 return (
     <Box>
     <LoanCalculator/>
