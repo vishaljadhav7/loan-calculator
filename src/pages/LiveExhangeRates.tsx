@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Box,
   Typography,
@@ -62,15 +62,16 @@ const LiveExchangeRates: React.FC = () => {
         `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_REACT_API}/latest/${currency}`
       );
       if (res.status !== 200) {
-        throw new Error("Error while fetching exchange rates!");
+        throw new AxiosError("Error while fetching exchange rates!");
       }
       const { data } = res;
       setCurrencyInfo({
         base_code: data.base_code,
         conversion_rates: data.conversion_rates,
       });
-    } catch (error: any) {
-      setError(error.message || "Failed to fetch exchange rates");
+    } catch (error: unknown) {
+
+      setError(error instanceof AxiosError ? error.message  :  "Failed to fetch exchange rates")
     } finally {
       setLoading(false);
     }
